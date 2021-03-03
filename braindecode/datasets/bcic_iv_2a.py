@@ -51,9 +51,9 @@ class BCICompetition4Set2A(object):
             assert ("783" in name_to_code)
 
         if train_set:
-            trial_codes = [7, 8, 9, 10]  # the 4 classes
+            trial_codes = [name_to_code['769'], name_to_code['770'] , name_to_code['771'], name_to_code['771']]  # Auto took  the values for the 4 classes 
         else:
-            trial_codes = [7]  # "unknown" class
+            trial_codes = [name_to_code['783']]  # "unknown" class
 
         trial_mask = np.array(
             [ev_code in trial_codes for ev_code in events[:, 2]])
@@ -61,8 +61,8 @@ class BCICompetition4Set2A(object):
         assert len(trial_events) == 288, "Got {:d} markers".format(
             len(trial_events)
         )
-        # from 7-10 to 1-4 by subtracting 6
-        trial_events[:, 2] = trial_events[:, 2] - 6
+        # from 7-10 to 1-4 by subtracting start of the trail position
+        trial_events[:, 2] = trial_events[:, 2] - name_to_code['768']
         # possibly overwrite with markers from labels file
         if self.labels_filename is not None:
             classes = loadmat(self.labels_filename)["classlabel"].squeeze()
@@ -77,7 +77,7 @@ class BCICompetition4Set2A(object):
         )
 
         # now also create 0-1 vector for rejected trials
-        trial_start_events = events[events[:, 2] == 6]
+        trial_start_events = events[events[:, 2] == name_to_code['768']]
         assert len(trial_start_events) == len(trial_events)
         artifact_trial_mask = np.zeros(len(trial_events), dtype=np.uint8)
         artifact_events = events[events[:, 2] == 1]
